@@ -1,323 +1,26 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-
-body{
-
-    width:100vw;
-    height:100vh;
-    overflow:hidden;
-    background:#f5f5f5;
-
-}
-
-
-
-.app{
-
-    width:100%;
-    height:100%;
-
-    display:flex;
-
-}
-
-
-
-/* =====================
-      GRAPH SECTION
-===================== */
-
-
-.graph-container{
-
-    flex:1;
-    position:relative;
-
-    background:white;
-
-    overflow:hidden;
-
-}
-
-
-#graphCanvas{
-
-    width:100%;
-    height:100%;
-
-    display:block;
-
-}
-
-
-
-/* coordinate display */
-
-#coordinates{
-
-    position:absolute;
-
-    left:15px;
-    bottom:15px;
-
-    background:white;
-
-    padding:8px 12px;
-
-    border-radius:8px;
-
-    box-shadow:0 2px 8px #0002;
-
-    font-size:14px;
-
-}
-
-
-
-/* graph controls */
-
-
-.graph-buttons{
-
-    position:absolute;
-
-    right:15px;
-    top:15px;
-
-    display:flex;
-    flex-direction:column;
-
-    gap:8px;
-
-}
-
-
-
-.graph-buttons button{
-
-    width:40px;
-    height:40px;
-
-    border:none;
-
-    background:white;
-
-    border-radius:8px;
-
-    font-size:22px;
-
-    cursor:pointer;
-
-    box-shadow:0 2px 8px #0003;
-
-}
-
-
-.graph-buttons button:hover{
-
-    background:#eee;
-
-}
-
-
-
-
-/* =====================
-       PANEL
-===================== */
-
-
-.panel{
-
-    width:380px;
-
-    height:100%;
-
-    background:#ffffff;
-
-    border-left:1px solid #ddd;
-
-    display:flex;
-
-    flex-direction:column;
-
-}
-
-
-
-/* toolbar */
-
-
-.toolbar{
-
-    height:55px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    padding:0 15px;
-
-    border-bottom:1px solid #ddd;
-
-}
-
-
-
-.toolbar h2{
-
-    font-size:18px;
-
-    color:#333;
-
-}
-
-
-
-.toolbar button{
-
-    border:none;
-
-    background:#1976d2;
-
-    color:white;
-
-    padding:8px 15px;
-
-    border-radius:6px;
-
-    cursor:pointer;
-
-}
-
-
-
-/* =====================
-      EXPRESSIONS
-===================== */
-
-
-#expressions{
-
-    flex:1;
-
-    overflow-y:auto;
-
-    padding:10px;
-
-}
-
-
-
-.expression{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    padding:10px;
-
-    margin-bottom:8px;
-
-    border-radius:8px;
-
-    background:#fafafa;
-
-    border:1px solid #ddd;
-
-}
-
-
-
-.expression input{
-
-    flex:1;
-
-    border:none;
-
-    outline:none;
-
-    background:transparent;
-
-    font-size:16px;
-
-}
-
-
-
-.color-dot{
-
-    width:15px;
-
-    height:15px;
-
-    border-radius:50%;
-
-}
-
-
-
-.delete{
-
-    cursor:pointer;
-
-    color:#d00;
-
-}
-
-
-
-
-
-#addExpression{
-
-    margin:10px;
-
-    padding:12px;
-
-    border:none;
-
-    border-radius:8px;
-
-    background:#4caf50;
-
-    color:white;
-
-    cursor:pointer;
-
-}
-
-
-
-
-
-/* =====================
-       KEYPAD
-===================== */
-
-
 #keypad{
 
-    height:260px;
+    background:#eeeeee;
 
     padding:8px;
 
-    display:grid;
+    display:flex;
 
-    grid-template-columns:repeat(5,1fr);
+    flex-direction:column;
 
     gap:6px;
 
-    background:#eee;
+}
+
+
+.key-row{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(10,1fr);
+
+    gap:5px;
 
 }
 
@@ -325,61 +28,47 @@ body{
 
 .key{
 
+    height:42px;
+
     border:none;
 
-    background:white;
+    border-radius:5px;
 
-    border-radius:6px;
+    background:#ffffff;
 
     font-size:16px;
 
+    font-weight:500;
+
     cursor:pointer;
 
-    box-shadow:0 1px 3px #0003;
+    box-shadow:
+    0 1px 3px #0002;
 
 }
+
+
+
+.key:hover{
+
+    background:#f1f1f1;
+
+}
+
 
 
 .key:active{
 
-    transform:scale(.95);
+    transform:scale(.96);
 
 }
 
 
 
+.key.special{
 
-/* MOBILE */
+    background:#dfe7f5;
 
-@media(max-width:800px){
-
-
-.app{
-
-    flex-direction:column;
-
-}
-
-
-
-.graph-container{
-
-    height:45vh;
-
-    flex:none;
-
-}
-
-
-
-.panel{
-
-    width:100%;
-
-    height:55vh;
-
-}
-
-
+    color:#1a4b8c;
 
 }
