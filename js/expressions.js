@@ -1,22 +1,13 @@
-// ==========================
-// js/expressions.js (Peak Edition)
-// ==========================
-// Manages system equation records, color palette tracks, and synchronized layout binding
+// ==========================================================================
+// js/expressions.js (Peak Edition State Framework)
+// ==========================================================================
 
 const ExpressionManager = {
     list: [
-        { id: 1, text: "sin(x)", color: "#1976d2", visible: true },
-        { id: 2, text: "x^2", color: "#e53935", visible: true }
+        { id: 1, text: "a = 2", color: "#64748b", visible: true },
+        { id: 2, text: "a * sin(x)", color: "#2563eb", visible: true }
     ],
-
-    colors: [
-        "#1976d2", // Tech Blue
-        "#e53935", // Crimson Red
-        "#43a047", // Vivid Green
-        "#8e24aa", // Rich Purple
-        "#fb8c00"  // Amber Orange
-    ],
-
+    colors: ["#2563eb", "#dc2626", "#16a34a", "#9333ea", "#ea580c"],
     container: null,
 
     init() {
@@ -33,33 +24,27 @@ const ExpressionManager = {
             if (!exp.visible) row.style.opacity = "0.5";
 
             row.innerHTML = `
-                <div class="color-dot" style="background: ${exp.color}; border: 2px solid ${exp.visible ? 'transparent' : '#888'}"></div>
-                <input type="text" value="${exp.text}" data-id="${exp.id}" class="expression-input" placeholder="y = f(x)" autocomplete="off" spellcheck="false">
-                <span class="delete" title="Delete expression">✕</span>
+                <div class="color-dot" style="background: ${exp.color}; border: 2px solid ${exp.visible ? 'transparent' : '#94a3b8'}"></div>
+                <input type="text" value="${exp.text}" data-id="${exp.id}" class="expression-input" placeholder="y = f(x) or a = 5" autocomplete="off" spellcheck="false">
+                <span class="delete" title="Delete">✕</span>
             `;
 
             const input = row.querySelector(".expression-input");
 
-            // Input listener optimized for the state-driven frame loop
             input.addEventListener("input", (e) => {
                 exp.text = e.target.value;
-                
-                // Trigger non-blocking visual refresh signal
                 if (typeof GraphEngine !== "undefined") {
                     GraphEngine.needsRedraw = true;
                 }
             });
 
-            // Clean element removal layout
             row.querySelector(".delete").onclick = () => {
                 this.remove(exp.id);
             };
 
-            // Expression hide/show visibility toggling
             row.querySelector(".color-dot").onclick = () => {
                 exp.visible = !exp.visible;
                 row.style.opacity = exp.visible ? "1" : "0.5";
-                
                 if (typeof GraphEngine !== "undefined") {
                     GraphEngine.needsRedraw = true;
                 }
@@ -79,18 +64,13 @@ const ExpressionManager = {
         });
 
         this.render();
-        
-        // Premium UX: Instantly focus the typing cursor inside the new input line
         const inputs = this.container.querySelectorAll(".expression-input");
-        if (inputs.length > 0) {
-            inputs[inputs.length - 1].focus();
-        }
+        if (inputs.length > 0) inputs[inputs.length - 1].focus();
     },
 
     remove(id) {
         this.list = this.list.filter(e => e.id !== id);
         this.render();
-        
         if (typeof GraphEngine !== "undefined") {
             GraphEngine.needsRedraw = true;
         }
