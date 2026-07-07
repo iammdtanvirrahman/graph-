@@ -1,1 +1,106 @@
-q
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Graphing Calculator</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<!-- Math parser library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.0.0/math.js"></script>
+
+</head>
+
+<body>
+
+<div class="app">
+
+
+    <!-- Graph Area -->
+    <section class="graph-container">
+
+        <canvas id="graphCanvas"></canvas>
+
+        <div id="coordinates">
+            x: 0 , y: 0
+        </div>
+
+        <div class="graph-buttons">
+
+            <button id="zoomIn">+</button>
+            <button id="zoomOut">−</button>
+            <button id="reset">⌂</button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- Control Panel -->
+    <section class="panel">
+
+
+        <header class="toolbar">
+
+            <h2>
+                Graph Calculator
+            </h2>
+
+            <button id="saveBtn">
+                Save
+            </button>
+
+        </header>
+
+
+
+        <!-- Expressions -->
+        <div id="expressions">
+
+        </div>
+
+
+
+        <!-- Add expression -->
+        <button id="addExpression">
+            + Add Expression
+        </button>
+
+
+
+        <!-- Keypad -->
+        <div id="keypad">
+
+        </div>
+
+
+    </section>
+
+
+</div>
+
+
+
+
+<!-- JavaScript Modules -->
+
+<script src="js/parser.js"></script>
+
+<script src="js/expressions.js"></script>
+
+<script src="js/graph.js"></script>
+
+<script src="js/keypad.js"></script>
+
+<script src="js/storage.js"></script>
+
+<script src="js/app.js"></script>
+
+
+</body>
+
+</html>
