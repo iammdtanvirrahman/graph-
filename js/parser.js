@@ -1,50 +1,70 @@
-// ==========================
-// js/parser.js (Peak Edition)
-// ==========================
-// Math Parser Engine with AST compilation caching for high-speed canvas evaluation
+// ==========================================================================
+// js/parser.js (Peak Edition Constant Engine)
+// ==========================================================================
 
 const MathParser = {
-    // High-performance cache map for compiled math.js expressions
     compileCache: new Map(),
+    constantsScope: {}, // Shared system scope memory structure for variables
 
     functions: {
         /**
-         * Safely evaluates an expression for a given x value.
-         * Leverages pre-compilation caching so lookups skip parsing overhead.
+         * Rebuilds parameter scopes across assigned formulas (e.g. "a = 2")
+         */
+        rebuildConstantsScope() {
+            MathParser.constantsScope = {
+                pi: Math.PI,
+                e: Math.E,
+                ln: math.log // Alias implementation support standard
+            };
+
+            if (typeof ExpressionManager === "undefined") return;
+
+            ExpressionManager.list.forEach(eq => {
+                if (!eq.visible || !eq.text.includes("=")) return;
+                
+                try {
+                    const parts = eq.text.split("=");
+                    const varName = parts[0].trim();
+                    const varExpr = parts[1].trim();
+
+                    // Ensure syntax meets explicit alphanumeric rules
+                    if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(varName) && varExpr !== "") {
+                        const compiled = math.compile(varExpr);
+                        const value = compiled.evaluate(MathParser.constantsScope);
+                        if (typeof value === "number") {
+                            MathParser.constantsScope[varName] = value;
+                        }
+                    }
+                } catch(e) {
+                    // Mute parsing runtime assignment syntax errors gracefully
+                }
+            });
+        },
+
+        /**
+         * Resolves function evaluation at runtime using local compiled caches
          */
         evaluate(expression, xValue) {
-            if (!expression || expression.trim() === "") return NaN;
+            if (!expression || expression.includes("=")) return NaN;
 
             try {
-                // Normalize mathematical characters for math.js engine compatibility
-                let sanitized = expression.replace(/π/g, "pi");
-
-                // Look up or generate compiled executable machine nodes
-                let compiledCode = MathParser.compileCache.get(sanitized);
+                let compiledCode = MathParser.compileCache.get(expression);
                 if (!compiledCode) {
-                    compiledCode = math.compile(sanitized);
-                    MathParser.compileCache.set(sanitized, compiledCode);
+                    compiledCode = math.compile(expression);
+                    MathParser.compileCache.set(expression, compiledCode);
                 }
 
-                // Create clean, minimal local scope mapping for execution
-                const scope = {
-                    x: xValue,
-                    ln: math.log // Alias standard math.js natural log to 'ln' for user preference
-                };
+                // Inherit current variables framework maps inside runtime instance
+                const executionScope = Object.create(MathParser.constantsScope);
+                executionScope.x = xValue;
 
-                const result = compiledCode.evaluate(scope);
-                
-                // Enforce proper primitive floating-point returns
+                const result = compiledCode.evaluate(executionScope);
                 return typeof result === 'number' ? result : NaN;
             } catch (error) {
-                // Gracefully suppress formatting structural errors to protect the rendering sequence
                 return NaN;
             }
         },
 
-        /**
-         * Clears memory cache structures when needed
-         */
         clearCache() {
             MathParser.compileCache.clear();
         }
