@@ -1,91 +1,37 @@
-// ==========================
-// js/keypad.js (Peak Edition)
-// ==========================
-// Virtual keyboard interaction engine with automatic cursor alignment tracking
+// ==========================================================================
+// js/keypad.js (Peak Edition Tabbed Control Interface)
+// ==========================================================================
 
 const Keypad = {
-    keys: [
-        [
-            { t: "x", v: "x" },
-            { t: "y", v: "y" },
-            { t: "a²", v: "^2" },
-            { t: "aᵇ", v: "^" },
-            { t: "√", v: "sqrt(" },
-            { t: "π", v: "pi" },
-            { t: "e", v: "e" },
-            { t: "(", v: "(" },
-            { t: ")", v: ")" },
-            { t: "⌫", v: "back" }
-        ],
-        [
-            { t: "sin", v: "sin(" },
-            { t: "cos", v: "cos(" },
-            { t: "tan", v: "tan(" },
-            { t: "log", v: "log(" },
-            { t: "ln", v: "ln(" },
-            { t: "|x|", v: "abs(" },
-            { t: "÷", v: "/" },
-            { t: "×", v: "*" },
-            { t: "−", v: "-" },
-            { t: "+" }, { t: "+", v: "+" }
-        ],
-        [
-            { t: "7", v: "7" },
-            { t: "8", v: "8" },
-            { t: "9", v: "9" },
-            { t: "4", v: "4" },
-            { t: "5", v: "5" },
-            { t: "6", v: "6" },
-            { t: "1", v: "1" },
-            { t: "2", v: "2" },
-            { t: "3", v: "3" },
-            { t: "0", v: "0" }
-        ],
-        [
-            { t: "←", v: "left" },
-            { t: "→", v: "right" },
-            { t: ".", v: "." },
-            { t: ",", v: "," },
-            { t: "C", v: "clear" }
-        ]
-    ],
-
+    activeTab: "main",
     activeInput: null,
 
+    tabs: {
+        main: [
+            [{t:"x",v:"x"}, {t:"y",v:"y"}, {t:"a²",v:"^2"}, {t:"aᵇ",v:"^"}, {t:"√",v:"sqrt("}, {t:"⌫",v:"back",s:"danger"}],
+            [{t:"7",v:"7"}, {t:"8",v:"8"}, {t:"9",v:"9"}, {t:"÷",v:"/"}, {t:"(",v:"("}, {t:")",v:")"}],
+            [{t:"4",v:"4"}, {t:"5",v:"5"}, {t:"6",v:"6"}, {t:"×",v:"*"}, {t:"π",v:"pi"}, {t:"e",v:"e"}],
+            [{t:"1",v:"1"}, {t:"2",v:"2"}, {t:"3",v:"3"}, {t:"−",v:"-"}, {t:"←",v:"left"}, {t:"→",v:"right"}],
+            [{t:"0",v:"0"}, {t:".",v:"."}, {t:",",v:","}, {t:"+",v:"+"}, {t:"=",v:"="}, {t:"C",v:"clear",s:"special"}]
+        ],
+        funcs: [
+            [{t:"sin",v:"sin("}, {t:"cos",v:"cos("}, {t:"tan",v:"tan("}, {t:"csc",v:"csc("}, {t:"sec",v:"sec("}, {t:"cot",v:"cot("}],
+            [{t:"asin",v:"asin("}, {t:"acos",v:"acos("}, {t:"atan",v:"atan("}, {t:"sinh",v:"sinh("}, {t:"cosh",v:"cosh("}, {t:"tanh",v:"tanh("}],
+            [{t:"log",v:"log("}, {t:"ln",v:"ln("}, {t:"abs",v:"abs("}, {t:"exp",v:"exp("}, {t:"floor",v:"floor("}, {t:"ceil",v:"ceil("}],
+            [{t:"<",v:"<"}, {t:">",v:">"}, {t:"≤",v:"<="}, {t:"≥",v:">="}, {t:"≠",v:"!="}, {t:"⌫",v:"back",s:"danger"}]
+        ],
+        abc: [
+            [{t:"a",v:"a"}, {t:"b",v:"b"}, {t:"c",v:"c"}, {t:"d",v:"d"}, {t:"e",v:"e"}, {t:"f",v:"f"}, {t:"g",v:"g"}],
+            [{t:"h",v:"h"}, {t:"i",v:"i"}, {t:"j",v:"j"}, {t:"k",v:"k"}, {t:"l",v:"l"}, {t:"m",v:"m"}, {t:"n",v:"n"}],
+            [{t:"o",v:"o"}, {t:"p",v:"p"}, {t:"q",v:"q"}, {t:"r",v:"r"}, {t:"s",v:"s"}, {t:"t",v:"t"}, {t:"u",v:"u"}],
+            [{t:"v",v:"v"}, {t:"w",v:"w"}, {t:"x",v:"x"}, {t:"y",v:"y"}, {t:"z",v:"z"}, {t:"_",v:"_"}, {t:"⌫",v:"back",s:"danger"}]
+        ]
+    },
+
     init() {
-        const keypad = document.getElementById("keypad");
-        if (!keypad) return;
+        this.bindTabs();
+        this.render();
 
-        keypad.innerHTML = ""; // Clear baseline content structures safely
-
-        this.keys.forEach((row) => {
-            const rowDiv = document.createElement("div");
-            rowDiv.className = "key-row";
-
-            row.forEach((key) => {
-                if (!key.t) return; // Skip broken key assignments safely
-                
-                const btn = document.createElement("button");
-                btn.className = "key";
-                btn.innerText = key.t;
-
-                // Visually flag structural special utility commands
-                if (["⌫", "C", "←", "→"].includes(key.t)) {
-                    btn.classList.add("special");
-                }
-
-                btn.onclick = (e) => {
-                    e.preventDefault(); // Stop click hijacking contexts
-                    this.press(key.v || key.t);
-                };
-
-                rowDiv.appendChild(btn);
-            });
-
-            keypad.appendChild(rowDiv);
-        });
-
-        // Global tracker updates the active focused math field automatically
         document.addEventListener("focusin", (e) => {
             if (e.target.classList.contains("expression-input")) {
                 this.activeInput = e.target;
@@ -93,9 +39,47 @@ const Keypad = {
         });
     },
 
+    bindTabs() {
+        document.querySelectorAll(".tab-btn").forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                this.activeTab = btn.getAttribute("data-tab");
+                this.render();
+            };
+        });
+    },
+
+    render() {
+        const container = document.getElementById("keypad");
+        if (!container) return;
+        container.innerHTML = "";
+
+        const currentRows = this.tabs[this.activeTab];
+        const totalCols = this.activeTab === "abc" ? 7 : 6;
+
+        currentRows.forEach(row => {
+            const rowDiv = document.createElement("div");
+            rowDiv.className = `key-row cols-${totalCols}`;
+
+            row.forEach(key => {
+                const btn = document.createElement("button");
+                btn.className = "key";
+                btn.innerText = key.t;
+                if (key.s) btn.classList.add(key.s);
+
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    this.press(key.v);
+                };
+                rowDiv.appendChild(btn);
+            });
+            container.appendChild(rowDiv);
+        });
+    },
+
     press(value) {
         if (!this.activeInput) return;
-
         const input = this.activeInput;
         let pos = input.selectionStart;
 
@@ -105,21 +89,16 @@ const Keypad = {
                 input.selectionStart = input.selectionEnd = pos - 1;
             }
         } else if (value === "clear") {
-            input.value = "";
-            pos = 0;
+            input.value = ""; pos = 0;
         } else if (value === "left") {
-            const newPos = Math.max(0, pos - 1);
-            input.selectionStart = input.selectionEnd = newPos;
+            input.selectionStart = input.selectionEnd = Math.max(0, pos - 1);
         } else if (value === "right") {
-            const newPos = Math.min(input.value.length, pos + 1);
-            input.selectionStart = input.selectionEnd = newPos;
+            input.selectionStart = input.selectionEnd = Math.min(input.value.length, pos + 1);
         } else {
-            // Standard dynamic character interpolation sequence
             input.value = input.value.substring(0, pos) + value + input.value.substring(pos);
             input.selectionStart = input.selectionEnd = pos + value.length;
         }
 
-        // Notify input listeners to update math objects seamlessly
         input.dispatchEvent(new Event("input"));
         input.focus();
     }
