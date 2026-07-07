@@ -1,80 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Graphing Calculator</title>
-
-<link rel="stylesheet" href="css/style.css">
-
-<!-- Math parser library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.0.0/math.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peak Edition Graphing Calculator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.0.0/math.js"></script>
 </head>
-
 <body>
 
 <div class="app">
-
-
-    <!-- Graph Area -->
     <section class="graph-container">
-
         <canvas id="graphCanvas"></canvas>
-
-        <div id="coordinates">
-            x: 0 , y: 0
-        </div>
-
+        <div id="coordinates">Center: (0.00, 0.00)</div>
         <div class="graph-buttons">
-
-            <button id="zoomIn">+</button>
-            <button id="zoomOut">−</button>
-            <button id="reset">⌂</button>
-
+            <button id="zoomIn" title="Zoom In">+</button>
+            <button id="zoomOut" title="Zoom Out">−</button>
+            <button id="reset" title="Recenter Origin">⌂</button>
         </div>
-
     </section>
 
-
-
-    <!-- Control Panel -->
     <section class="panel">
-
-
         <header class="toolbar">
-
-            <h2>
-                Graph Calculator
-            </h2>
-
-            <button id="saveBtn">
-                Save
-            </button>
-
+            <h2>Graph Calculator</h2>
+            <button id="saveBtn">Save Workspace</button>
         </header>
 
+        <div id="expressions"></div>
 
+        <button id="addExpression">+ Add Expression</button>
 
-        <!-- Expressions -->
-        <div id="expressions">
-
-        </div>
-
-
-
-        <!-- Add expression -->
-        <button id="addExpression">
-            + Add Expression
-        </button>
-
-
-
-        <!-- Keypad -->
-    
-<div class="keypad-container">
+        <div class="keypad-container">
             <div class="keypad-tabs">
                 <button class="tab-btn active" data-tab="main">123</button>
                 <button class="tab-btn" data-tab="funcs">f(x)</button>
@@ -83,28 +39,14 @@
             <div id="keypad"></div>
         </div>
     </section>
-
-
 </div>
 
-
-
-
-<!-- JavaScript Modules -->
-
 <script src="js/parser.js"></script>
-
 <script src="js/expressions.js"></script>
-
 <script src="js/graph.js"></script>
-
 <script src="js/keypad.js"></script>
-
 <script src="js/storage.js"></script>
-
 <script src="js/app.js"></script>
 
-
 </body>
-
 </html>
