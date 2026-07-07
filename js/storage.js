@@ -1,96 +1,45 @@
-// Local Storage Manager
-// Saves and loads calculator expressions
-
+// ==========================
+// js/storage.js (Peak Edition)
+// ==========================
+// Secure local preservation manager linked into the frame refresh cycle
 
 const StorageManager = {
+    key: "graphing_calculator_data",
 
+    save() {
+        if (typeof ExpressionManager === "undefined") return;
 
-    key:"graphing_calculator_data",
-
-
-
-    save(){
-
-
-        let data =
-        JSON.stringify(
-            ExpressionManager.list
-        );
-
-
-        localStorage.setItem(
-            this.key,
-            data
-        );
-
-
-        alert("Graph saved!");
-
+        try {
+            const data = JSON.stringify(ExpressionManager.list);
+            localStorage.setItem(this.key, data);
+            
+            // Console confirmations are cleaner than annoying pop-up alert modals
+            console.log("Graph calculations saved successfully.");
+        } catch (error) {
+            console.error("Storage persistence error:", error);
+        }
     },
 
+    load() {
+        if (typeof ExpressionManager === "undefined") return;
 
+        const data = localStorage.getItem(this.key);
+        if (!data) return;
 
-
-
-    load(){
-
-
-        let data =
-        localStorage.getItem(
-            this.key
-        );
-
-
-
-        if(!data)
-        return;
-
-
-
-        try{
-
-
-            ExpressionManager.list =
-            JSON.parse(data);
-
-
-
+        try {
+            ExpressionManager.list = JSON.parse(data);
             ExpressionManager.render();
 
-
-            GraphEngine.draw();
-
-
-
+            // Notify the graph loop to update smoothly
+            if (typeof GraphEngine !== "undefined") {
+                GraphEngine.needsRedraw = true;
+            }
+        } catch (error) {
+            console.warn("Unable to safely load structured cache configurations:", error);
         }
-
-        catch(error){
-
-
-            console.log(
-                "Unable to load data"
-            );
-
-
-        }
-
-
     },
 
-
-
-
-
-    clear(){
-
-
-        localStorage.removeItem(
-            this.key
-        );
-
-
+    clear() {
+        localStorage.removeItem(this.key);
     }
-
-
-
 };
